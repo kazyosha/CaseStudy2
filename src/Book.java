@@ -5,9 +5,12 @@ public class Book {
     private String name;
     private String author;
     private String category;
-    private boolean available ;
+    private boolean available;
 
-    public Book(){};
+    public Book() {
+    }
+
+    ;
 
     public Book(String id, String name, String author, String category, boolean available) {
         this.id = id;

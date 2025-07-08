@@ -2,8 +2,6 @@ package src;
 
 import Interface.ILibrary;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -11,9 +9,11 @@ import java.util.Scanner;
 public class LibraryManagement implements ILibrary {
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<User> users = new ArrayList<>();
+    private FileHandler fw;
     private Scanner sc = new Scanner(System.in);
 
     public LibraryManagement() {
+        fw = new FileHandler(books, users);
     }
 
     @Override
@@ -45,6 +45,7 @@ public class LibraryManagement implements ILibrary {
         String userAddress = sc.nextLine();
 
         users.add(new User(userID, userName, userEmail, userPhone, userAddress));
+        System.out.println("<UNK> User added successfully.");
     }
 
     @Override
@@ -156,23 +157,23 @@ public class LibraryManagement implements ILibrary {
         // Leave empty as requested
     }
 
-    @Override
-    public void saveToFile() {
-        try {
-            FileWriter file = new FileWriter("books.txt", true);
-            for (Book book : books) {
-                file.write(book.getId() + "," +
-                        book.getName() + "," +
-                        book.getAuthor() + "," +
-                        book.getCategory() + "," +
-                        book.isAvailable() + "\n");
-            }
-            file.close();
-            System.out.println("Books saved successfully.");
-        } catch (IOException e) {
-            System.out.println("❌ Lỗi khi lưu sách: " + e.getMessage());
-        }
-    }
+//    @Override
+//    public void saveToFile() {
+//        try {
+//            FileWriter file = new FileWriter("books.txt", true);
+//            for (Book book : books) {
+//                file.write(book.getId() + "," +
+//                        book.getName() + "," +
+//                        book.getAuthor() + "," +
+//                        book.getCategory() + "," +
+//                        book.isAvailable() + "\n");
+//            }
+//            file.close();
+//            System.out.println("Books saved successfully.");
+//        } catch (IOException e) {
+//            System.out.println("❌ Lỗi khi lưu sách: " + e.getMessage());
+//        }
+//    }
 
     @Override
     public void sortBooksById() {
@@ -185,23 +186,23 @@ public class LibraryManagement implements ILibrary {
         System.out.println("✅ Books sorted by ID.");
     }
 
-    @Override
-    public void saveUserFile() {
-        try {
-            FileWriter file = new FileWriter("user.txt", true);
-            for (User user : users) {
-                file.write(user.getId() + "," +
-                        user.getName() + "," +
-                        user.getEmail() + "," +
-                        user.getPhoneNumber() + "," +
-                        user.getAddress() + "\n");
-            }
-            file.close();
-            System.out.println("Users saved successfully.");
-        } catch (IOException e) {
-            System.out.println("❌ Error saving list: " + e.getMessage());
-        }
-    }
+//    @Override
+//    public void saveUserFile() {
+//        try {
+//            FileWriter file = new FileWriter("user.txt", true);
+//            for (User user : users) {
+//                file.write(user.getId() + "," +
+//                        user.getName() + "," +
+//                        user.getEmail() + "," +
+//                        user.getPhoneNumber() + "," +
+//                        user.getAddress() + "\n");
+//            }
+//            file.close();
+//            System.out.println("Users saved successfully.");
+//        } catch (IOException e) {
+//            System.out.println("❌ Error saving list: " + e.getMessage());
+//        }
+//    }
 //    @Override
 //    public void loadToFile() {
 //        try (BufferedReader reader = new BufferedReader(new FileReader("books.txt"))) {
@@ -305,10 +306,13 @@ public class LibraryManagement implements ILibrary {
                     statusBook();
                     break;
                 case "11":
-                    saveToFile();
+                    fw.saveToFile();
+                    fw.ReadBookToFile();
                     break;
                 case "12":
-                    saveUserFile();
+                    fw.saveUserFile();
+                    fw.ReadUserFile();
+                    break;
                 case "13":
                     sortBooksById();
                     break;

@@ -1,8 +1,11 @@
 package src;
 
 public interface IFile {
-    void SaveFileBooks();
-    void SaveFileUser();
-    void loadFileBook();
-    void loadFileUser();
+    void saveToFile();
+
+    void saveUserFile();
+
+    void ReadBookToFile();
+
+    void ReadUserFile();
 }
