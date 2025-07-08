@@ -12,9 +12,13 @@ public interface ILibrary {
     void viewUser();
     void statusBook();
     void saveToFile();
+    void sortBooksById();
+    void saveUserFile();
 //    void loadToFile();
     void returnBook();
     void borrowBook();
     void runMenu();
+
+
 
 }

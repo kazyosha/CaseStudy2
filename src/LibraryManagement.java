@@ -2,8 +2,10 @@ package src;
 
 import Interface.ILibrary;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class LibraryManagement implements ILibrary {
@@ -32,15 +34,15 @@ public class LibraryManagement implements ILibrary {
     @Override
     public void addUser() {
         System.out.println("Enter User ID: ");
-        int userID = sc.nextInt();
+        String userID = sc.nextLine();
         System.out.println("Enter User Name: ");
-        String userName = sc.next();
+        String userName = sc.nextLine();
         System.out.println("Enter User Email: ");
-        String userEmail = sc.next();
+        String userEmail = sc.nextLine();
         System.out.println("Enter User Phone: ");
-        String userPhone = sc.next();
+        String userPhone = sc.nextLine();
         System.out.println("Enter User Address: ");
-        String userAddress = sc.next();
+        String userAddress = sc.nextLine();
 
         users.add(new User(userID, userName, userEmail, userPhone, userAddress));
     }
@@ -54,14 +56,12 @@ public class LibraryManagement implements ILibrary {
             for (Book book : books) {
                 if (bookID.equals(book.getId())) {
                     System.out.println("Enter new title: ");
-                    book.setName(sc.next());
+                    book.setName(sc.nextLine());
                     System.out.println("Enter new author: ");
-                    book.setAuthor(sc.next());
+                    book.setAuthor(sc.nextLine());
                     System.out.println("Enter new category: ");
-                    book.setCategory(sc.next());
+                    book.setCategory(sc.nextLine());
                     System.out.println("✅ Book updated successfully.");
-                } else {
-                    System.out.println("⚠️ Book ID not found.");
                 }
             }
         } catch (Exception e) {
@@ -83,6 +83,7 @@ public class LibraryManagement implements ILibrary {
                     break;
                 }
             }
+            System.out.println("<UNK> Book deleted successfully.");
         } catch (Exception e) {
             System.out.println("❌ Error: " + e.getMessage());
         }
@@ -172,6 +173,35 @@ public class LibraryManagement implements ILibrary {
             System.out.println("❌ Lỗi khi lưu sách: " + e.getMessage());
         }
     }
+
+    @Override
+    public void sortBooksById() {
+        if (books.isEmpty()) {
+            System.out.println("⚠️ No books to sort.");
+            return;
+        }
+
+        books.sort(Comparator.comparing(Book::getId));
+        System.out.println("✅ Books sorted by ID.");
+    }
+
+    @Override
+    public void saveUserFile() {
+        try {
+            FileWriter file = new FileWriter("user.txt", true);
+            for (User user : users) {
+                file.write(user.getId() + "," +
+                        user.getName() + "," +
+                        user.getEmail() + "," +
+                        user.getPhoneNumber() + "," +
+                        user.getAddress() + "\n");
+            }
+            file.close();
+            System.out.println("Users saved successfully.");
+        } catch (IOException e) {
+            System.out.println("❌ Error saving list: " + e.getMessage());
+        }
+    }
 //    @Override
 //    public void loadToFile() {
 //        try (BufferedReader reader = new BufferedReader(new FileReader("books.txt"))) {
@@ -220,6 +250,8 @@ public class LibraryManagement implements ILibrary {
             System.out.println("9. View Users");
             System.out.println("10. Book Statistics");
             System.out.println("11. Save Books to File");
+            System.out.println("12. Save User to File");
+            System.out.println("13. Sort");
             System.out.println("0. Exit");
             System.out.print("Select: ");
             String choice = sc.nextLine();
@@ -275,8 +307,13 @@ public class LibraryManagement implements ILibrary {
                 case "11":
                     saveToFile();
                     break;
+                case "12":
+                    saveUserFile();
+                case "13":
+                    sortBooksById();
+                    break;
                 case "0":
-                    System.out.println("👋 Exiting program. Goodbye!");
+                    System.out.println("Exiting program. Goodbye!");
                     return;
                 default:
                     System.out.println("❌ Invalid option. Please try again.");
