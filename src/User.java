@@ -1,8 +1,10 @@
 package src;
 
+import Interface.IUser;
+
 import java.util.ArrayList;
 
-public class User {
+public class User implements IUser {
     private String id;
     private String name;
     private String email;
@@ -67,6 +69,27 @@ public class User {
     }
 
     @Override
+    public void borrowBook(Book book) {
+        if (book.isAvailable()) {
+            borrowedBooks.add(book);
+            book.setAvailable(false);
+            System.out.println("Borrowed books: " + book.getName());
+        } else {
+            System.out.println("Book is currently unavailable");
+        }
+    }
+
+    @Override
+    public void returnBook(Book book) {
+        if (borrowedBooks.remove(book)) {
+            book.setAvailable(true);
+            System.out.println("Đã trả sách: " + book.getName());
+        } else {
+            System.out.println("Không tìm thấy sách trong danh sách mượn.");
+        }
+    }
+
+    @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
@@ -77,4 +100,5 @@ public class User {
                 ", borrowedBooks=" + borrowedBooks +
                 '}';
     }
+
 }

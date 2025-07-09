@@ -19,8 +19,6 @@ public interface ILibrary {
 
     void viewUser();
 
-    void statusBook();
-
     void sortBooksById();
 
     void returnBook();
@@ -28,6 +26,7 @@ public interface ILibrary {
     void borrowBook();
 
     void runMenu();
+    void statistics();
 
 
 }

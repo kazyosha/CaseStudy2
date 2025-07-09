@@ -14,6 +14,8 @@ public class LibraryManagement implements ILibrary {
 
     public LibraryManagement() {
         fw = new FileHandler(books, users);
+        this.users = fw.loadUsersFromFile();
+        books.addAll(fw.loadBooksFromFile());
     }
 
     @Override
@@ -28,7 +30,7 @@ public class LibraryManagement implements ILibrary {
         String bookCategory = sc.nextLine();
 
         books.add(new Book(bookID, bookName, bookAuthor, bookCategory, true));
-        System.out.println("✅ Book added successfully.");
+        System.out.println(" Book added successfully.");
     }
 
     @Override
@@ -62,11 +64,11 @@ public class LibraryManagement implements ILibrary {
                     book.setAuthor(sc.nextLine());
                     System.out.println("Enter new category: ");
                     book.setCategory(sc.nextLine());
-                    System.out.println("✅ Book updated successfully.");
+                    System.out.println(" Book updated successfully.");
                 }
             }
         } catch (Exception e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println(" Error: " + e.getMessage());
         }
     }
 
@@ -76,7 +78,7 @@ public class LibraryManagement implements ILibrary {
             System.out.println("Enter Book ID to delete: ");
             String bookID = sc.nextLine();
             if (books.isEmpty()) {
-                System.out.println("⚠️ No books to delete.");
+                System.out.println(" No books to delete.");
             }
             for (Book book : books) {
                 if (book.getId().equals(bookID)) {
@@ -86,7 +88,7 @@ public class LibraryManagement implements ILibrary {
             }
             System.out.println("<UNK> Book deleted successfully.");
         } catch (Exception e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println(" Error: " + e.getMessage());
         }
     }
 
@@ -95,7 +97,7 @@ public class LibraryManagement implements ILibrary {
         System.out.println("Enter Book ID to search: ");
         String bookID = sc.nextLine();
         if (books.isEmpty()) {
-            System.out.println("⚠️ Book list is empty.");
+            System.out.println(" Book list is empty.");
         }
         for (Book book : books) {
             if (book.getId().equals(bookID)) {
@@ -109,7 +111,7 @@ public class LibraryManagement implements ILibrary {
         System.out.println("Enter author name to search: ");
         String bookAuthor = sc.nextLine();
         if (books.isEmpty()) {
-            System.out.println("⚠️ Book list is empty.");
+            System.out.println(" Book list is empty.");
         }
         for (Book book : books) {
             if (book.getAuthor().equals(bookAuthor)) {
@@ -123,7 +125,7 @@ public class LibraryManagement implements ILibrary {
         System.out.println("Enter category to search: ");
         String bookCategory = sc.nextLine();
         if (books.isEmpty()) {
-            System.out.println("⚠️ Book list is empty.");
+            System.out.println(" Book list is empty.");
         }
         for (Book book : books) {
             if (book.getCategory().equals(bookCategory)) {
@@ -135,7 +137,7 @@ public class LibraryManagement implements ILibrary {
     @Override
     public void viewBook() {
         if (books.isEmpty()) {
-            System.out.println("⚠️ No books to display.");
+            System.out.println(" No books to display.");
         }
         for (Book book : books) {
             System.out.println(book);
@@ -145,16 +147,11 @@ public class LibraryManagement implements ILibrary {
     @Override
     public void viewUser() {
         if (users.isEmpty()) {
-            System.out.println("⚠️ No users to display.");
+            System.out.println(" No users to display.");
         }
         for (User user : users) {
             System.out.println(user);
         }
-    }
-
-    @Override
-    public void statusBook() {
-        // Leave empty as requested
     }
 
 //    @Override
@@ -171,19 +168,19 @@ public class LibraryManagement implements ILibrary {
 //            file.close();
 //            System.out.println("Books saved successfully.");
 //        } catch (IOException e) {
-//            System.out.println("❌ Lỗi khi lưu sách: " + e.getMessage());
+//            System.out.println(" Lỗi khi lưu sách: " + e.getMessage());
 //        }
 //    }
 
     @Override
     public void sortBooksById() {
         if (books.isEmpty()) {
-            System.out.println("⚠️ No books to sort.");
+            System.out.println(" No books to sort.");
             return;
         }
 
         books.sort(Comparator.comparing(Book::getId));
-        System.out.println("✅ Books sorted by ID.");
+        System.out.println(" Books sorted by ID.");
     }
 
 //    @Override
@@ -200,7 +197,7 @@ public class LibraryManagement implements ILibrary {
 //            file.close();
 //            System.out.println("Users saved successfully.");
 //        } catch (IOException e) {
-//            System.out.println("❌ Error saving list: " + e.getMessage());
+//            System.out.println(" Error saving list: " + e.getMessage());
 //        }
 //    }
 //    @Override
@@ -220,20 +217,53 @@ public class LibraryManagement implements ILibrary {
 //                }
 //            }
 //
-//            System.out.println("✅ Books loaded from file.");
+//            System.out.println(" Books loaded from file.");
 //        } catch (IOException e) {
-//            System.out.println("⚠️ Failed to load books: " + e.getMessage());
+//            System.out.println(" Failed to load books: " + e.getMessage());
 //        }
 //    }
 
+    private User findUserById(String id) {
+        return users.stream().filter(u -> u.toString().contains(id)).findFirst().orElse(null);
+    }
+
+    private Book findBookById(String id) {
+        return books.stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+    }
+
     @Override
     public void returnBook() {
-        // Leave empty as requested
+        System.out.print("User ID: ");
+        String userId = sc.nextLine();
+        User user = findUserById(userId);
+        if (user != null) {
+            System.out.print("Book ID: ");
+            String bookId = sc.nextLine();
+            Book book = findBookById(bookId);
+            if (book != null) user.returnBook(book);
+            else System.out.println("️ No books found.");
+        } else System.out.println(" User not found.");
     }
 
     @Override
     public void borrowBook() {
-        // Leave empty as requested
+        System.out.print("ID người dùng: ");
+        String userId = sc.nextLine();
+        User user = findUserById(userId);
+        if (user != null) {
+            System.out.print("ID sách: ");
+            String bookId = sc.nextLine();
+            Book book = findBookById(bookId);
+            if (book != null) user.borrowBook(book);
+            else System.out.println(" Không tìm thấy sách.");
+        } else System.out.println(" Không tìm thấy người dùng.");
+    }
+
+    @Override
+    public void statistics() {
+        long borrowed = books.stream().filter(b -> !b.isAvailable()).count();
+        System.out.println("Tổng số sách: " + books.size());
+        System.out.println("Số sách đã mượn: " + borrowed);
     }
 
     @Override
@@ -284,7 +314,7 @@ public class LibraryManagement implements ILibrary {
                             searchBookCategory();
                             break;
                         default:
-                            System.out.println("❌ Invalid search option.");
+                            System.out.println(" Invalid search option.");
                     }
                     break;
                 case "5":
@@ -303,11 +333,10 @@ public class LibraryManagement implements ILibrary {
                     viewUser();
                     break;
                 case "10":
-                    statusBook();
+                    statistics();
                     break;
                 case "11":
                     fw.saveToFile();
-                    fw.ReadBookToFile();
                     break;
                 case "12":
                     fw.saveUserFile();
@@ -320,7 +349,7 @@ public class LibraryManagement implements ILibrary {
                     System.out.println("Exiting program. Goodbye!");
                     return;
                 default:
-                    System.out.println("❌ Invalid option. Please try again.");
+                    System.out.println(" Invalid option. Please try again.");
             }
         }
     }
